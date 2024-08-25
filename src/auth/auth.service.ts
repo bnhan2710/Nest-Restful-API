@@ -3,9 +3,15 @@ import { User, Note } from 'prisma/prisma-client';
 import { PrismaService } from '../prisma/prisma.service';
 import * as brcypt from 'bcrypt';
 import { AuthDTO } from './dto';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 @Injectable({})
 export class AuthService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private jwtService: JwtService,
+    private configService: ConfigService
+  ) {}
   async register(authDTO: AuthDTO) {
     try {
       const salt = await brcypt.genSalt(10);
@@ -25,6 +31,7 @@ export class AuthService {
         },
       });
       return user
+
     } catch (err) {
       if(err.code === 'P2002'){
         throw new ForbiddenException('Error in credentials')
@@ -47,9 +54,24 @@ export class AuthService {
         if(!match){
             throw new ForbiddenException('Incorrect password')
         }
-        return user
+        return await this.generateAccessToken(user.id,user.email)
     }catch(err){
         return err
     }
+  }
+
+  async generateAccessToken(userId:number,email:string): Promise<{accessToken: string}> {
+      const payload = {
+        sub: userId,
+        email,
+      }
+      const accessToken = await this.jwtService.signAsync(payload,{
+        expiresIn: '10m',
+        secret: this.configService.get('JWT_SECRET')
+      })
+      
+      return {
+          accessToken
+      }
   }
 }

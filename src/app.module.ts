@@ -4,14 +4,17 @@ import { UserModule } from './user/user.module';
 import { TodoModule } from './todo/todo.module';
 import { NoteModule } from './note/note.module';
 import { PrismaModule } from './prisma/prisma.module';
-
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal:true,
+    }),
     AuthModule,
     UserModule,
     TodoModule,
     NoteModule,
-    PrismaModule
+    PrismaModule,
   ],
 })
 export class AppModule {}
