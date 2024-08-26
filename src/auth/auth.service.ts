@@ -30,6 +30,7 @@ export class AuthService {
           createdAt: true,
         },
       });
+      
       return user
 
     } catch (err) {
