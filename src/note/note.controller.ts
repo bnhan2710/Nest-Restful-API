@@ -11,27 +11,28 @@ export class NoteController {
     constructor( private noteService : NoteService ) { }
     @Get()
     getNotes(@GetUser('id') userId: number){
-
+        return this.noteService.getNotes(userId)
     }
     @Get(':id')
     getNoteById(@Param('id' ,ParseIntPipe) noteId : number){
-
+        return this.noteService.getNoteById(noteId)
     }
     @Post()
     insertNode(
         @GetUser('id') userId: number,
         @Body() insertNoteDTO : InsertNoteDTO
     ){
-    
+        return this.noteService.insertNote(userId, insertNoteDTO)
     }
-    @Put()
+    @Put(':id')
     updateNoteById(
         @Param('id', ParseIntPipe) noteId: number,
         @Body() updateNoteDTO : UpdateNoteDTO
     ){
+        return this.noteService.updateNoteById(noteId, updateNoteDTO)
     }
-    @Delete()
+    @Delete(':id')
     deleteNoteById( @Param('id', ParseIntPipe) noteId: number){
-
+        return this.noteService.deleteNoteById(noteId)
     }
 }

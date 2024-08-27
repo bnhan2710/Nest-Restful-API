@@ -7,6 +7,8 @@ export class InsertNoteDTO{
 
     description?: string;
     
+    userId?: number;
+
     @IsNotEmpty()
     @IsString()
     url: string;
